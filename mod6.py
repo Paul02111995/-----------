@@ -24,10 +24,20 @@ class Record:
     def add_phone(self, number):
         self.phones.append(Phone(number))
 
-    def delete_phone(self, number):
-        self.phones = [phone for phone in self.phones if phone.value != number]
+    def remove_phone(self, number):
+        updated_phones = []
+        for phone in self.phones:
+            if phone.value != number:
+                updated_phones.append(phone)
+        self.phones = updated_phones
 
     def edit_phone(self, old_number, new_number):
+        if not any(phone.value == old_number for phone in self.phones):
+            raise ValueError("Old phone number is not exist")    
+        
+        if len(new_number) != 10 or not new_number.isdigit():
+            raise ValueError("New phone number must be 10 digits")
+        
         for phone in self.phones:
             if phone.value == old_number:
                 phone.value = new_number
@@ -36,7 +46,8 @@ class Record:
     def find_phone(self, number):
         for phone in self.phones:
             if phone.value == number:
-                return phone.value
+                return phone
+        return None
 
     def __str__(self):
         phones = "; ".join([phone.value for phone in self.phones])
